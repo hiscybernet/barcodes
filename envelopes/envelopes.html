@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <script src="https://unpkg.com/pdf-lib@1.4.0"></script>
+    <script src="https://unpkg.com/downloadjs@1.4.7"></script>
+    <title>ENVELOPES</title>
+</head>
+<body style="background-color: #0099FF;">
+    <label for="TBRETURNADDRESS">Return Address</label><br />
+    <div>
+        <textarea name="TBRETURNADDRESS" rows="4" cols="20" id="TBRETURNADDRESS" style="font-family: Tahoma; font-size: 12pt; height: 77px; width: 290px;">Kay Lively
+Attorney and Counselor at Law
+2107 Tishomingo Trail
+Austin, Texas 78734</textarea>
+        <textarea name="TBDELIVERYADDRESS" rows="4" cols="20" id="TBDELIVERYADDRESS" style="font-family: Tahoma; font-size: 14pt; height: 95px; width: 290px;"></textarea>
+        <button id="BTNTOME" name="BTNTOME" onclick="toMe()">DELIVER TO ME</button>
+        <button id="BTNCREATEENVELOPE" name="BTNCREATEENVELOPE" onclick="createPdf()">CREATE ENVELOPE</button>
+        <br />
+        <iframe id="pdf" style="width: 90%; height: 400px;"></iframe>
+        <br />
+    </div>
+    <script type="text/javascript">
+        function toMe() {
+            document.getElementById("TBDELIVERYADDRESS").value = "Kay Lively\nAttorney and Counselor at Law\n2107 Tishomingo Trail\n\Austin, Texas 78734";
+            return;
+        }
+        async function createPdf() {
+            const pdfDoc = await PDFLib.PDFDocument.create();
+            pdfDoc.setCreator("eruditeislander@gmail.com");
+            pdfDoc.setProducer("Philip's pdf 9000 engine.");
+            const page = pdfDoc.addPage([684, 297]);
+            const trf = await pdfDoc.embedFont(StandardFonts.Helvetica)
+            const fs = 12;
+            page.moveTo(100, 250);
+            page.drawText(document.getElementById("TBRETURNADDRESS").value, { x: 1, font: trf, size: fs });
+            //page.drawText(document.getElementById("TBRETURNADDRESS").value);
+            const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
+            document.getElementById('pdf').src = pdfDataUri;
+            TBDELIVERYADDRESS.value = pdfDataUri;
+            //createEnvelope(await pdfDoc.saveAsBase64({ dataUri: false }));
+        }
+        const { PDFDocument, StandardFonts, rgb } = PDFLib
+
+        async function createIt() {
+            const pdfDoc = await PDFDocument.create()
+            const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman)
+            const page = pdfDoc.addPage()
+            const { width, height } = page.getSize()
+            const fontSize = 30
+            page.drawText('Creating PDFs in JavaScript is awesome!', {
+                x: 50,
+                y: height - 4 * fontSize,
+                size: fontSize,
+                font: timesRomanFont,
+                color: rgb(0, 0.53, 0.71),
+            })
+
+            // Serialize the PDFDocument to bytes (a Uint8Array)
+            const pdfBytes = await pdfDoc.save()
+
+            // Trigger the browser to download the PDF document
+            download(pdfBytes, "pdf-lib_creation_example.pdf", "application/pdf");
+        }
+
+
+        function base64ToBlob(base64, type = "application/octet-stream") {
+            const binStr = atob(base64);
+            const len = binStr.length;
+            const arr = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                arr[i] = binStr.charCodeAt(i);
+            }
+            return new Blob([arr], { type: type });
+        }
+
+        async function createEnvelope(inbytes) {
+            //var base64 = ("yourBase64StringVariable")
+            var base64 = inbytes;
+            const blob = base64ToBlob(base64, 'application/pdf');
+            const url = URL.createObjectURL(blob);
+            const pdfWindow = window.open("");
+            pdfWindow.document.write("<iframe width='100%' height='100%' src='" + url + "'></iframe>");
+        }
+    </script>
+</body>
+</html>
