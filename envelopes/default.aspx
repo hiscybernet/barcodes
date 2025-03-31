@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>PRINTING</title>
+    <title>COSC 4100</title>
     <meta charset="utf-8" />
     <script src="https://unpkg.com/pdf-lib@1.4.0"></script>
     <script src="https://unpkg.com/downloadjs@1.4.7"></script>
@@ -21,9 +21,9 @@
         }
     </script>
 </head>
-<body style="background-color: #e5d16f;">
-    <h2>PRINTING</h2>
-    <h3>ENVELOPES</h3>
+<body style="background-color: #0094ff;">
+    <h2>THE CAREER MEN</h2>
+    <h3>INTELIGENT MAIIL BARCODE GENERATOR</h3>
     <form id="form1" runat="server">
         <input type="checkbox" id="CB2ME" name="CB2ME" value="CB2ME" onchange="TO_ME();" />
         <label for="CB2ME">DELIVER TO ME</label>
@@ -36,7 +36,6 @@ Corpus Christi, Texas 78412</asp:TextBox>
         <br />
         <iframe id="pdf" runat="server" style="width: 800px; height: 400px;"></iframe>
         <hr />
-        <h2>LABELS</h2>
     </form>
 </body>
 </html>
